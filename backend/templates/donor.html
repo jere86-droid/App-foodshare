@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodShare - Donor Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="dashboard">
+    <h2>Donor Dashboard</h2>
+    <form method="POST" action="/donate">
+      <input type="text" name="food_item" placeholder="Food Item" required>
+      <input type="number" name="quantity" placeholder="Quantity" required>
+      <textarea name="description" placeholder="Description"></textarea>
+      <button type="submit" class="btn">Donate</button>
+    </form>
+    <a href="/" class="btn btn-alt">Logout</a>
+  </div>
+</body>
+</html>
