@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">FoodShare</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+            {% if user.role == 'donor' %}
+            <li class="nav-item"><a class="nav-link" href="/donor_dashboard">My Donor Dashboard</a></li>
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+<div class="d-flex" style="min-height: 100vh;">
+  <!-- Sidebar -->
+  <div class="bg-light border-end" id="sidebar-wrapper" style="width: 220px;">
+    <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom">FoodShare</div>
+    <div class="list-group list-group-flush my-3">
+            <a href="/dashboard" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">Dashboard</a>
+            {% if user.role == 'donor' %}
+            <a href="/post_food" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">Post Food</a>
+            {% endif %}
+            {% if user.role == 'recipient' %}
+            <a href="/requests" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">My Requests</a>
+            {% endif %}
+            <a href="/profile" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">Profile</a>
+            <a href="/logout" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold">Logout</a>
+    </div>
+    <div class="text-center mt-4">
+      <span class="fw-bold">Welcome, {{ user.name }}</span><br>
+      <span class="badge bg-primary">{{ user.role|capitalize }}</span>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="container-fluid p-4">
+    <h2 class="mb-4">Available Food Posts</h2>
+    <form class="row mb-4" method="get" action="/dashboard">
+      <div class="col-md-2">
+        <input type="text" class="form-control" name="search" placeholder="Search by food name" value="{{ search }}">
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control" name="location" placeholder="Filter by location" value="{{ location }}">
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control" name="donor" placeholder="Filter by donor" value="{{ donor }}">
+      </div>
+      <div class="col-md-2">
+        <input type="date" class="form-control" name="expiry" placeholder="Expiry after" value="{{ expiry }}">
+      </div>
+      <div class="col-md-2">
+        <input type="number" class="form-control" name="quantity" placeholder="Min quantity" value="{{ quantity }}">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Search/Filter</button>
+      </div>
+    </form>
+    {% if messages %}
+      <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-absolute top-0 end-0 p-3">
+          {% for msg in messages %}
+          <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{ msg }}
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    <div class="row">
+      {% for post in posts %}
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ post.food_name }}</h5>
+            <p class="card-text">{{ post.description }}</p>
+            <p><strong>Quantity:</strong> {{ post.quantity }}</p>
+            <p><strong>Expiry:</strong> {{ post.expiry_date }}</p>
+            <p><strong>Location:</strong> {{ post.location }}</p>
+            <p><strong>Donor:</strong> {{ post.donor_name }}</p>
+            <span class="badge bg-success">Available</span>
+            {% if user.role == 'recipient' %}
+              {% set already_requested = false %}
+              {% for claim in user_claims %}
+                {% if claim.food_post_id == post.id and claim.date_requested == current_date %}
+                  {% set already_requested = true %}
+                {% endif %}
+              {% endfor %}
+              {% if already_requested %}
+                <button class="btn btn-secondary" disabled>Requested</button>
+              {% else %}
+                <form method="POST" action="/claim_food/{{ post.id }}" class="mt-2">
+                  <button type="submit" class="btn btn-success">Request</button>
+                </form>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipient Dashboard - FoodShare</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav>
+    <div class="container">
+      <a href="{{ url_for('index') }}" class="logo">FoodShare</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>Available Donations</h2>
+    <ul>
+      {% for donation in donations %}
+        <li>
+          <strong>{{ donation[1] }}</strong> - {{ donation[2] }} units
+          <p>{{ donation[3] }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</body>
+</html>

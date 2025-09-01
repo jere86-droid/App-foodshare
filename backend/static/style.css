@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* General Styling */
 body {
   font-family: Arial, sans-serif;
@@ -65,3 +66,72 @@ button {
   width: 95%;
 }
 
+=======
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: #333;
+}
+
+.container {
+  margin-top: 100px;
+}
+
+h1, h2 {
+  color: #2c3e50;
+}
+
+.highlight {
+  color: #27ae60;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  background: #27ae60;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background: #2ecc71;
+}
+
+.btn-alt {
+  background: #3498db;
+}
+
+.btn-alt:hover {
+  background: #2980b9;
+}
+
+/* Forms */
+.form-container, .dashboard {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+input, select, textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+button {
+  width: 95%;
+}
+
+>>>>>>> f7d95ff (FoodShare)

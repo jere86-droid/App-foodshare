@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome Donor | FoodShare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container-fluid p-0">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">FoodShare</a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="/donor_home">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="/donor_dashboard">My Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="/post_food">Post Food</a></li>
+      <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+      <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg">
+        <div class="card-body text-center">
+          <h2 class="mb-3">Welcome, {{ user.name if user and user.name else 'Donor' }}!</h2>
+          <p class="lead">Thank you for being a FoodShare donor. Your generosity helps feed families and reduce food waste in our community.</p>
+          <blockquote class="blockquote mb-4">
+            <p>"The best way to find yourself is to lose yourself in the service of others."</p>
+            <footer class="blockquote-footer">Mahatma Gandhi</footer>
+          </blockquote>
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="card bg-success text-white">
+                <div class="card-body">
+                  <h5 class="card-title"><i class="bi bi-basket-fill"></i> Total Food Posts</h5>
+                  <p class="display-6">{{ total_posts if total_posts is not none else 0 }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card bg-info text-white">
+                <div class="card-body">
+                  <h5 class="card-title"><i class="bi bi-egg-fried"></i> Total Quantity Donated</h5>
+                  <div class="progress mb-2" style="height: 30px;">
+                   
+                  <small>Goal: 100 meals</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr class="my-4">
+          <h4 class="mb-3">Achievements</h4>
+          <div class="mb-4">
+            {% if total_posts >= 1 %}
+              <span class="badge bg-warning text-dark me-2"><i class="bi bi-star-fill"></i> First Post!</span>
+            {% endif %}
+            {% if total_posts >= 10 %}
+              <span class="badge bg-success me-2"><i class="bi bi-trophy-fill"></i> 10+ Posts!</span>
+            {% endif %}
+            {% if total_quantity >= 50 %}
+              <span class="badge bg-primary me-2"><i class="bi bi-award-fill"></i> 50+ Meals Shared!</span>
+            {% endif %}
+          </div>
+          <h4 class="mb-3">Top Donors</h4>
+          <ul class="list-group mb-4">
+            {% if leaderboard %}
+              {% for donor in leaderboard %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  {{ donor.donor_name }}
+                  <span class="badge bg-success rounded-pill">{{ donor.total }}</span>
+                </li>
+              {% endfor %}
+            {% else %}
+              <li class="list-group-item">No donor data available.</li>
+            {% endif %}
+          </ul>
+          <h4 class="mb-3">Recent Activity</h4>
+          <ul class="list-group mb-4">
+            {% if notifications %}
+              {% for note in notifications %}
+                <li class="list-group-item">
+                  <strong>{{ note.description }}</strong> <br>
+                  <small class="text-muted">{{ note.created_at }}</small>
+                </li>
+              {% endfor %}
+            {% else %}
+              <li class="list-group-item">No recent activity.</li>
+            {% endif %}
+          </ul>
+          <hr class="my-4">
+          <h4 class="mb-3">Recent Food Posts</h4>
+          <div id="foodCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% if recent_posts %}
+                {% for post in recent_posts %}
+                  <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                      <h5>{{ post.food_name }}</h5>
+                      <p>{{ post.description }}</p>
+                    </div>
+                  </div>
+                {% endfor %}-1
+              {% else %}
+                <div class="carousel-item active">
+                  
+                  <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h5>No food posts yet</h5>
+                    <p>Be the first to donate!</p>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#foodCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#foodCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+          <h4 class="mb-3">Recipient Testimonials</h4>
+          <div class="row mb-4">
+            {% if testimonials %}
+              {% for testimonial in testimonials %}
+                <div class="col-md-6 mb-3">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                      <blockquote class="blockquote mb-0">
+                        <p>{{ testimonial.feedback_text }}</p>
+                        <footer class="blockquote-footer">{{ testimonial.recipient_name }}</footer>
+                      </blockquote>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="col-12">
+                <div class="alert alert-info">No testimonials yet.</div>
+              </div>
+            {% endif %}
+          </div>
+          <a href="/donor_dashboard" class="btn btn-primary btn-lg">Go to My Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
